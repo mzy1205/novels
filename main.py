@@ -54,16 +54,7 @@ def main(download_name, search_url):
 
             want_download = input("请输入想下载的序号或输入q退出：")
             check_qiut(want_download)
-            if int(want_download) in num_list:
-                novel_tr = soup.select(
-                    "tr:nth-of-type(" + str(int(want_download) + 1) + ")")
-                novel_name = novel_tr[0].select("td:nth-of-type(1)")
-                novel_name = novel_name[0].get_text()
-                novel_href = novel_tr[0].select("a:nth-of-type(1)")
-                novel_href = novel_href[0].get("href")
-                main(download_name=novel_name, search_url=novel_href)
-                return
-            else:
+            if (not (want_download.isdigit())) or (int(want_download) not in num_list):
                 print("输入错误，请重新输入")
                 time.sleep(1)
                 os_type = platform.system()  # 操作系统类型。win和linux系统清屏方式不同
@@ -72,6 +63,14 @@ def main(download_name, search_url):
                 else:
                     os.system('clear')
                 main(download_name=temp_download, search_url=None)
+                return
+            else:
+                novel_tr = soup.select("tr:nth-of-type(" + str(int(want_download) + 1) + ")")
+                novel_name = novel_tr[0].select("td:nth-of-type(1)")
+                novel_name = novel_name[0].get_text()
+                novel_href = novel_tr[0].select("a:nth-of-type(1)")
+                novel_href = novel_href[0].get("href")
+                main(download_name=novel_name, search_url=novel_href)
                 return
 
     regexp = re.compile("/(.+?).html")
@@ -98,6 +97,9 @@ def main(download_name, search_url):
     f = open(temp_download + '.txt', 'w')
     f.write(novel)
     f.close()
+    print("================")
+    print("下载完毕，准备退出")
+    time.sleep(0.5)
     return
 
 host = 'http://www.biquge.com.tw'
